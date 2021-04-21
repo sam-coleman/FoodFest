@@ -11,6 +11,6 @@ include_directories( ${OpenCV_INCLUDE_DIRS})
 add_executable( project project.cpp )
 add_executable(dlibtest dlibTest.cpp)
 target_link_libraries(dlibtest dlib::dlib)
+target_link_libraries(project dlib::dlib)
 target_link_libraries( dlibtest ${OpenCV_LIBS} )
 target_link_libraries( project ${OpenCV_LIBS} )
-
