@@ -5,7 +5,6 @@
  * @author Kate Mackowiak
  */
 
-
 #include <dlib/opencv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core.hpp>
@@ -16,9 +15,14 @@
 #include <dlib/image_processing.h>
 #include <dlib/gui_widgets.h>
 #include <cmath> 
+#include <iostream>    
+#include <vector>
+
+#include "food.h"
 
 using namespace dlib;
 using namespace std;
+using namespace cv;
 
 bool rectangle_in_bounds(cv::Rect test_rect, cv::Rect bound_box, int buffer = 0){
     bool in_bounds = false;
@@ -44,6 +48,9 @@ int main()
 
         image_window win;
 
+
+        cv::namedWindow("win2",cv::WINDOW_AUTOSIZE);
+
         // Load face detection and pose estimation models.
         frontal_face_detector detector = get_frontal_face_detector();
         shape_predictor pose_model;
@@ -51,6 +58,16 @@ int main()
 
         // set up bounding box
         cv::Rect bound_box;
+
+        //make a food
+        Food new_food = Food();
+        new_food.updateCoordinates(0,0);
+
+        //overlay setup
+        Mat mask;
+        std::vector<Mat> rgbLayer;
+        
+
 
         int count = 0;
         // Grab and process frames until the main window is closed by the user.
@@ -87,12 +104,22 @@ int main()
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
                                     abs(shapes[i].part(63).y()-shapes[i].part(67).y()));
                 cv::rectangle(temp,bound_box,cv::Scalar(255,0,0));
+                
+                
+                split(new_food.getImg(),rgbLayer);
+                if(new_food.getImg().channels() == 4)
+                {
+                    split(new_food.getImg(),rgbLayer);         // seperate channels
+                    Mat cs[3] = { rgbLayer[0],rgbLayer[1],rgbLayer[2] };
+                    merge(cs,3,new_food.getImg());  // glue together again
+                    mask = rgbLayer[3];       // png's alpha channel used as mask
+                }
+                new_food.getImg().copyTo(temp(cv::Rect(0,0,new_food.getImg().cols, new_food.getImg().rows)),mask);
 
-                cv::Rect new_rect = cv::Rect(200,200,20,20);
-                cv::rectangle(temp,new_rect,cv::Scalar(255,255,0));
+                // printf("cookie size %i %i \n",new_food.getImg().size().width,new_food.getImg().size().height);
+                // new_food.getImg().copyTo(temp(new_food.getCoordintes())); 
 
-
-                if (rectangle_in_bounds(new_rect,bound_box,10)) { //switch color to blue
+                if (rectangle_in_bounds(new_food.getCoordintes(),bound_box,10)) { //switch color to blue
                     printf("intersect!!!!! %i \n", count);
                     count++;
                 } 
@@ -116,5 +143,4 @@ int main()
         cout << e.what() << endl;
     }
 }
-
 
