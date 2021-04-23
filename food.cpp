@@ -9,7 +9,7 @@ using namespace std;
 Food::Food(){
     string imgAddress = imgAddresses[0];//std::rand() % imgAddresses.size()];
     cout<<imgAddress<<endl;
-    img = imread(imgAddress, 0);
+    img = imread(imgAddress, -1);
     cv::resize(img, img, Size(30,30)); 
     coordinates = Rect(0,0,img.size().width,img.size().height);
 
