@@ -86,7 +86,7 @@ int main()
 
         int count = 0;
         // Grab and process frames until the main window is closed by the user.
-        while(!win.is_closed())
+        while(1)
         {
             // Grab a frame
             cv::Mat temp;
@@ -112,9 +112,15 @@ int main()
             for (unsigned long i = 0; i < faces.size(); ++i){
                 shapes.push_back(pose_model(cimg, faces[i]));
 
+                //creates four channel image
+                createAlphaImage(temp,outputMat);
+                cout<<outputMat.channels()<<endl;
+
+                //make for loop eventually
+                new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
+
                 //Find bound box of mouth
                 // left: 61 right: 65 top: 63 bottom: 67
-                
                 bound_box = cv::Rect(shapes[i].part(49).x(),    
                                     shapes[i].part(63).y(), 
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
@@ -131,12 +137,6 @@ int main()
                 //     mask = rgbLayer[3];       // png's alpha channel used as mask
                 // }
                 
-                createAlphaImage(temp,outputMat);
-
-                cout<<outputMat.channels()<<endl;
-
-                new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
-
                 // printf("cookie size %i %i \n",new_food.getImg().size().width,new_food.getImg().size().height);
                 //new_food.getImg().copyTo(temp(new_food.getCoordintes())); 
 
@@ -154,11 +154,11 @@ int main()
             // Display it all on the screen
             win.clear_overlay();
             win.set_image(cimg);
-            // win.
-            // win.add_overlay(render_face_detections(shapes));
+            win.add_overlay(render_face_detections(shapes));
             imshow("win2",outputMat);
 
-            
+            int keyPressed = waitKey(10); //wait to see if key pressed
+            if (keyPressed == 27) break; //stop by ESC key
         }
     }
     catch(serialization_error& e)
