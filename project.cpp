@@ -53,6 +53,7 @@ int main()
 {
     try
     {
+        srand(time(0));
         cv::VideoCapture cap(0);
         if (!cap.isOpened())
         {
@@ -60,9 +61,9 @@ int main()
             return 1;
         }
 
-        image_window win;
+        //image_window win;
 
-
+        
         cv::namedWindow("win2",cv::WINDOW_AUTOSIZE);
 
         // Load face detection and pose estimation models.
@@ -74,8 +75,16 @@ int main()
         cv::Rect bound_box;
 
         //make a food
-        Food new_food = Food();
-        new_food.updateCoordinates(200,200);
+        std::vector<Food> foods;
+        int numFoods = 2;
+        for (int i = 0; i < numFoods; i++) {
+            foods.push_back(Food());
+            // cout << foods[i].getCoordintes() << endl;
+        }
+        //foods[0].updateCoordinates(200, 200);
+       
+        // Food new_food = Food();
+        // new_food.updateCoordinates(200,200);
 
         //overlay setup
         Mat mask;
@@ -105,19 +114,22 @@ int main()
             IplImage ipl_img = cvIplImage(temp);
             cv_image<bgr_pixel> cimg(&ipl_img);
 
+            //creates four channel image
+            createAlphaImage(temp,outputMat);
+            //cout<<outputMat.channels()<<endl;
+
+            for (int i = 0; i < foods.size(); i++) {
+                foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
+            }
+            //make for loop eventually
+            //new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
+
             // Detect faces 
             std::vector<dlib::rectangle> faces = detector(cimg);
             // Find the pose of each face.
             std::vector<full_object_detection> shapes;
             for (unsigned long i = 0; i < faces.size(); ++i){
                 shapes.push_back(pose_model(cimg, faces[i]));
-
-                //creates four channel image
-                createAlphaImage(temp,outputMat);
-                cout<<outputMat.channels()<<endl;
-
-                //make for loop eventually
-                new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
 
                 //Find bound box of mouth
                 // left: 61 right: 65 top: 63 bottom: 67
@@ -140,10 +152,15 @@ int main()
                 // printf("cookie size %i %i \n",new_food.getImg().size().width,new_food.getImg().size().height);
                 //new_food.getImg().copyTo(temp(new_food.getCoordintes())); 
 
-                if (rectangle_in_bounds(new_food.getCoordintes(),bound_box,10)) { //switch color to blue
-                    printf("intersect!!!!! %i \n", count);
-                    count++;
+                for (int i = 0; i < foods.size(); i++) {
+                    if (rectangle_in_bounds(foods[i].getCoordintes(),bound_box,20)) {
+                        cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
+                        foods.erase(foods.begin()+i);
+                        cout << "size of foods: " << foods.size() << endl;
                 } 
+                }
+
+                
             }
 
             // cvtColor(outputMat,outputMat,COLOR_BGRA2RGBA);            
@@ -152,9 +169,9 @@ int main()
             // cv_image<rgb_alpha_pixel> testimg(&ipl_img_test);
             
             // Display it all on the screen
-            win.clear_overlay();
-            win.set_image(cimg);
-            win.add_overlay(render_face_detections(shapes));
+            // win.clear_overlay();
+            // win.set_image(cimg);
+            // win.add_overlay(render_face_detections(shapes));
             imshow("win2",outputMat);
 
             int keyPressed = waitKey(10); //wait to see if key pressed

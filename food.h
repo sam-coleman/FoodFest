@@ -16,7 +16,7 @@
 #include <dlib/gui_widgets.h>
 #include <cmath> 
 #include <iostream>    
-
+#include <cstdlib>
 
 
 class Food {       
