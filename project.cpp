@@ -76,6 +76,7 @@ int main()
 
         //make a food
         std::vector<Food> foods;
+        int randNum;
         int numFoods = 2;
         for (int i = 0; i < numFoods; i++) {
             foods.push_back(Food());
@@ -117,6 +118,11 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
+
+            randNum = std::rand()%(60);
+            if (randNum == 1) {
+                foods.push_back(Food());
+            }
 
             for (int i = 0; i < foods.size(); i++) {
                 foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
