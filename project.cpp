@@ -118,8 +118,8 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
-
-            randNum = std::rand()%(60);
+            
+            randNum = std::rand()%(foods.size()*15+1);
             if (randNum == 1) {
                 foods.push_back(Food());
             }
