@@ -29,7 +29,16 @@ class Food {
 
         void updateCoordinates(int x, int y);
 
+        //Takes in delta for vel
+        void updateVelocity(int xVelDelta, int yVelDelta);
+
+        cv::Point getVelocity();
+
+        cv::Point getAcceleration();
+
     private:
         cv::Mat img;
         cv::Rect coordinates;
+        cv::Point velocity; 
+        cv::Point acceleration;
 };

@@ -125,6 +125,10 @@ int main()
         int score = 0;
         // Grab and process frames until the main window is closed by the user.
         Rect foodCoords;
+        int velocityDelta;
+        int posDelta;
+        int timestep = 1;
+
         while(1)
         {
             // Grab a frame
@@ -148,6 +152,7 @@ int main()
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
 
+            cout << foods[0].getVelocity().y << endl;
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
                 if (rectangle_in_bounds(foodCoords,bound_box,20)) { //Eat food
@@ -161,11 +166,14 @@ int main()
                     foods.erase(foods.begin()+i);
                 }
                 else { //move food down
-                    foods[i].updateCoordinates(foodCoords.x, foodCoords.y+2);
+                    velocityDelta = (int)foods[i].getAcceleration().y * timestep; //60 is arbitrary
+                    foods[i].updateVelocity(0,velocityDelta);
+                    posDelta = foods[i].getVelocity().y * timestep;
+                    foods[i].updateCoordinates(foodCoords.x, foodCoords.y+posDelta);
                 }
             }
 
-            randNum = std::rand()%(foods.size()*15+1);
+            randNum = std::rand()%(foods.size()*15+2);
             if (randNum == 1) {
                 foods.push_back(Food());
             }
