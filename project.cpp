@@ -124,6 +124,7 @@ int main()
 
         int score = 0;
         // Grab and process frames until the main window is closed by the user.
+        Rect foodCoords;
         while(1)
         {
             // Grab a frame
@@ -146,23 +147,21 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
-            
-            cout << "cookie: " << foods[0].getCoordintes().y << endl;
-            cout << outputMat.size().height-foods[0].getCoordintes().height << endl;
 
             for (int i = 0; i < foods.size(); i++) {
-                if (rectangle_in_bounds(foods[i].getCoordintes(),bound_box,20)) { //Eat food
+                foodCoords = foods[i].getCoordintes();
+                if (rectangle_in_bounds(foodCoords,bound_box,20)) { //Eat food
                     //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
                     score += 1;
                     cout << "Score: " << score << endl;
                     foods.erase(foods.begin()+i);
                     //cout << "size of foods: " << foods.size() << endl;
                 } 
-                else if (foods[i].getCoordintes().y+1 >= outputMat.size().height-foods[i].getCoordintes().height) {//delete food if out of frame
+                else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
                     foods.erase(foods.begin()+i);
                 }
                 else { //move food down
-                    foods[i].updateCoordinates(foods[i].getCoordintes().x, foods[i].getCoordintes().y+2);
+                    foods[i].updateCoordinates(foodCoords.x, foodCoords.y+2);
                 }
             }
 
@@ -192,7 +191,7 @@ int main()
                                     shapes[i].part(63).y(), 
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
                                     abs(shapes[i].part(63).y()-shapes[i].part(67).y()));
-                cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
+                //cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
                 
                 
                 // split(new_food.getImg(),rgbLayer);
