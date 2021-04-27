@@ -94,7 +94,7 @@ int main()
         // four channel output
         cv::Mat_<cv::Vec4b> outputMat;
 
-        int count = 0;
+        int score = 0;
         // Grab and process frames until the main window is closed by the user.
         while(1)
         {
@@ -160,9 +160,11 @@ int main()
 
                 for (int i = 0; i < foods.size(); i++) {
                     if (rectangle_in_bounds(foods[i].getCoordintes(),bound_box,20)) {
-                        cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
+                        //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
+                        score += 1;
+                        cout << "Score: " << score << endl;
                         foods.erase(foods.begin()+i);
-                        cout << "size of foods: " << foods.size() << endl;
+                        //cout << "size of foods: " << foods.size() << endl;
                 } 
                 }
 
