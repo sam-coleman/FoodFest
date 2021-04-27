@@ -147,6 +147,25 @@ int main()
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
             
+            cout << "cookie: " << foods[0].getCoordintes().y << endl;
+            cout << outputMat.size().height-foods[0].getCoordintes().height << endl;
+
+            for (int i = 0; i < foods.size(); i++) {
+                if (rectangle_in_bounds(foods[i].getCoordintes(),bound_box,20)) { //Eat food
+                    //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
+                    score += 1;
+                    cout << "Score: " << score << endl;
+                    foods.erase(foods.begin()+i);
+                    //cout << "size of foods: " << foods.size() << endl;
+                } 
+                else if (foods[i].getCoordintes().y+1 >= outputMat.size().height-foods[i].getCoordintes().height) {//delete food if out of frame
+                    foods.erase(foods.begin()+i);
+                }
+                else { //move food down
+                    foods[i].updateCoordinates(foods[i].getCoordintes().x, foods[i].getCoordintes().y+2);
+                }
+            }
+
             randNum = std::rand()%(foods.size()*15+1);
             if (randNum == 1) {
                 foods.push_back(Food());
@@ -188,15 +207,7 @@ int main()
                 // printf("cookie size %i %i \n",new_food.getImg().size().width,new_food.getImg().size().height);
                 //new_food.getImg().copyTo(temp(new_food.getCoordintes())); 
 
-                for (int i = 0; i < foods.size(); i++) {
-                    if (rectangle_in_bounds(foods[i].getCoordintes(),bound_box,20)) {
-                        //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
-                        score += 1;
-                        cout << "Score: " << score << endl;
-                        foods.erase(foods.begin()+i);
-                        //cout << "size of foods: " << foods.size() << endl;
-                } 
-                }
+             
 
                 
             }
