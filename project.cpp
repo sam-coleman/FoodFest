@@ -134,8 +134,8 @@ int main()
         int velocityDelta;
         int posDelta;
         int timestep = 1;
-
-        while(1)
+        int strikes = 0;
+        while(strikes <=2)
         {
             // Grab a frame
             cv::Mat temp;
@@ -168,6 +168,7 @@ int main()
                     //cout << "size of foods: " << foods.size() << endl;
                 } 
                 else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
+                    strikes += 1;
                     foods.erase(foods.begin()+i);
                 }
                 else { //move food down
@@ -182,6 +183,7 @@ int main()
                 poisonCoords = poisons[i].getCoordintes();
                 if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat food
                     score -= 1;
+                    strikes += 1;
                     cout << "Score: " << score << endl;
                     poisons.erase(poisons.begin()+i);
                 } 
@@ -195,7 +197,7 @@ int main()
                     poisons[i].updateCoordinates(poisonCoords.x, poisonCoords.y+posDelta);
                 }
             }
-            
+            cout << "strikes: " << strikes << endl;
 
             randNumFood = std::rand()%(foods.size()*15+2);
             if (randNumFood == 1) {
@@ -268,6 +270,14 @@ int main()
             int keyPressed = waitKey(10); //wait to see if key pressed
             if (keyPressed == 27) break; //stop by ESC key
         }
+        destroyWindow("win2");
+        Mat loss;
+        std::string textToShow = "Score: " + std::to_string(score); 
+        loss = imread("../foods/loss.jpg");
+        putText(loss, textToShow, Point(loss.size().width/10, (loss.size().height/4)), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
+        imshow("Loser Screen", loss);
+        waitKey(0);
+        return 0;
     }
     catch(serialization_error& e)
     {
