@@ -104,17 +104,18 @@ int main()
 
         //make a food
         std::vector<Food> foods;
-        int randNum;
+        int randNumFood;
         int numFoods = 2;
         for (int i = 0; i < numFoods; i++) {
             foods.push_back(Food());
             // cout << foods[i].getCoordintes() << endl;
         }
+        int randNumPoision;
         std::vector<Poison> poisons;
-        int numPoisons = 1;
-        for (int i = 0; i < numPoisons; i++) {
-            poisons.push_back(Poison());
-        }
+        // int numPoisons = 0;
+        // for (int i = 0; i < numPoisons; i++) {
+        //     poisons.push_back(Poison());
+        // }
         //foods[0].updateCoordinates(200, 200);
        
         // Food new_food = Food();
@@ -129,7 +130,7 @@ int main()
 
         int score = 0;
         // Grab and process frames until the main window is closed by the user.
-        Rect foodCoords;
+        Rect foodCoords, poisonCoords;
         int velocityDelta;
         int posDelta;
         int timestep = 1;
@@ -177,9 +178,33 @@ int main()
                 }
             }
 
-            randNum = std::rand()%(foods.size()*15+2);
-            if (randNum == 1) {
+            for (int i = 0; i < poisons.size(); i++) {
+                poisonCoords = poisons[i].getCoordintes();
+                if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat food
+                    score -= 1;
+                    cout << "Score: " << score << endl;
+                    poisons.erase(poisons.begin()+i);
+                } 
+                else if (poisonCoords.y+1 >= outputMat.size().height-poisonCoords.height) {//delete poison if out of frame
+                    poisons.erase(poisons.begin()+i);
+                }
+                else { //move poison down
+                    velocityDelta = (int)poisons[i].getAcceleration().y * timestep;
+                    poisons[i].updateVelocity(0,velocityDelta);
+                    posDelta = poisons[i].getVelocity().y * timestep;
+                    poisons[i].updateCoordinates(poisonCoords.x, poisonCoords.y+posDelta);
+                }
+            }
+            
+
+            randNumFood = std::rand()%(foods.size()*15+2);
+            if (randNumFood == 1) {
                 foods.push_back(Food());
+            }
+
+            randNumPoision = std::rand()%(60);
+            if (randNumPoision == 1) {
+                poisons.push_back(Poison());
             }
 
             for (int i = 0; i < foods.size(); i++) {
