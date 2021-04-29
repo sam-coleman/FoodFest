@@ -88,11 +88,8 @@ int main()
             cerr << "Unable to connect to camera" << endl;
             return 1;
         }
-
-        //image_window win;
-
         
-        cv::namedWindow("win2",cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("gameWindow",cv::WINDOW_AUTOSIZE);
 
         // Load face detection and pose estimation models.
         frontal_face_detector detector = get_frontal_face_detector();
@@ -108,18 +105,9 @@ int main()
         int numFoods = 2;
         for (int i = 0; i < numFoods; i++) {
             foods.push_back(Food());
-            // cout << foods[i].getCoordintes() << endl;
         }
         int randNumPoision;
         std::vector<Poison> poisons;
-        // int numPoisons = 0;
-        // for (int i = 0; i < numPoisons; i++) {
-        //     poisons.push_back(Poison());
-        // }
-        //foods[0].updateCoordinates(200, 200);
-       
-        // Food new_food = Food();
-        // new_food.updateCoordinates(200,200);
 
         //overlay setup
         Mat mask;
@@ -129,7 +117,6 @@ int main()
         cv::Mat_<cv::Vec4b> outputMat;
 
         int score = 0;
-        // Grab and process frames until the main window is closed by the user.
         Rect foodCoords, poisonCoords;
         int velocityDelta;
         int posDelta;
@@ -143,12 +130,7 @@ int main()
             {
                 break;
             }
-            // Turn OpenCV's Mat into something dlib can deal with.  Note that this just
-            // wraps the Mat object, it doesn't copy anything.  So cimg is only valid as
-            // long as temp is valid.  Also don't do anything to temp that would cause it
-            // to reallocate the memory which stores the image as that will make cimg
-            // contain dangling pointers.  This basically means you shouldn't modify temp
-            // while using cimg.
+            // Turn OpenCV's Mat into something dlib can deal with
             cv::flip(temp, temp, +1); //mirror
             outputMat = temp;
             IplImage ipl_img = cvIplImage(temp);
@@ -156,16 +138,24 @@ int main()
 
             //creates four channel image
             createAlphaImage(temp,outputMat);
-            //cout<<outputMat.channels()<<endl;
+            
+            randNumFood = std::rand()%(foods.size()*15+2); // make new food?
+            if (randNumFood == 1) {
+                foods.push_back(Food());
+            }
 
+            randNumPoision = std::rand()%(60); //make new poison?
+            if (randNumPoision == 1) {
+                poisons.push_back(Poison());
+            }
+
+            //detect and move foods
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
                 if (rectangleInBounds(foodCoords,bound_box,30)) { //Eat food
-                    //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
                     score += 1;
                     cout << "Score: " << score << endl;
                     foods.erase(foods.begin()+i);
-                    //cout << "size of foods: " << foods.size() << endl;
                 } 
                 else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
                     strikes += 1;
@@ -179,9 +169,10 @@ int main()
                 }
             }
 
+            //detect and move poisons
             for (int i = 0; i < poisons.size(); i++) {
                 poisonCoords = poisons[i].getCoordintes();
-                if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat food
+                if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat poison
                     score -= 1;
                     strikes += 1;
                     cout << "Score: " << score << endl;
@@ -197,31 +188,17 @@ int main()
                     poisons[i].updateCoordinates(poisonCoords.x, poisonCoords.y+posDelta);
                 }
             }
-            cout << "strikes: " << strikes << endl;
 
-            randNumFood = std::rand()%(foods.size()*15+2);
-            if (randNumFood == 1) {
-                foods.push_back(Food());
-            }
-
-            randNumPoision = std::rand()%(60);
-            if (randNumPoision == 1) {
-                poisons.push_back(Poison());
-            }
-
+            //overlay images
             for (int i = 0; i < foods.size(); i++) {
-                //foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
                 Mat food = foods[i].getImg();
                 overlayImage(&outputMat, &food, cv::Point(foods[i].getCoordintes().x,foods[i].getCoordintes().y));
             }
 
             for (int i = 0; i < poisons.size(); i++) {
-                //foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
                 Mat poison = poisons[i].getImg();
                 overlayImage(&outputMat, &poison, cv::Point(poisons[i].getCoordintes().x,poisons[i].getCoordintes().y));
             }
-            //make for loop eventually
-            //new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
 
             // Detect faces 
             std::vector<dlib::rectangle> faces = detector(cimg);
@@ -236,41 +213,16 @@ int main()
                                     shapes[i].part(63).y(), 
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
                                     abs(shapes[i].part(63).y()-shapes[i].part(67).y()));
-                cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
-                
-                
-                // split(new_food.getImg(),rgbLayer);
-                // if(new_food.getImg().channels() == 4)
-                // {
-                //     split(new_food.getImg(),rgbLayer);         // seperate channels
-                //     Mat cs[3] = { rgbLayer[0],rgbLayer[1],rgbLayer[2] };
-                //     merge(cs,3,new_food.getImg());  // glue together again
-                //     mask = rgbLayer[3];       // png's alpha channel used as mask
-                // }
-                
-                // printf("cookie size %i %i \n",new_food.getImg().size().width,new_food.getImg().size().height);
-                //new_food.getImg().copyTo(temp(new_food.getCoordintes())); 
-
-             
-
+                //cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
                 
             }
-
-            // cvtColor(outputMat,outputMat,COLOR_BGRA2RGBA);            
-
-            // IplImage ipl_img_test = cvIplImage(outputMat);
-            // cv_image<rgb_alpha_pixel> testimg(&ipl_img_test);
-            
-            // Display it all on the screen
-            // win.clear_overlay();
-            // win.set_image(cimg);
-            // win.add_overlay(render_face_detections(shapes));
-            imshow("win2",outputMat);
+            imshow("gameWindow",outputMat); //show game
 
             int keyPressed = waitKey(10); //wait to see if key pressed
             if (keyPressed == 27) break; //stop by ESC key
         }
-        destroyWindow("win2");
+        //user has lost
+        destroyWindow("gameWindow");
         Mat loss;
         std::string textToShow = "Score: " + std::to_string(score); 
         loss = imread("../foods/loss.jpg");
