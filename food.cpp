@@ -4,6 +4,7 @@ using namespace cv;
 using namespace std;
 
 std::vector<std::string> imgAddresses {"../foods/cookie.png", "../foods/oreo.png"};
+const int gravity = 1;
 
 Food::Food(){
     string imgAddress = imgAddresses[rand() % imgAddresses.size()];
@@ -44,5 +45,6 @@ Point Food::getVelocity(){
 }
 
 Point Food::getAcceleration(){
+    acceleration[1] = gravity - velocity.y*velocity.y/(15*15);
     return acceleration;
 }
