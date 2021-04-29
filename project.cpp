@@ -110,6 +110,11 @@ int main()
             foods.push_back(Food());
             // cout << foods[i].getCoordintes() << endl;
         }
+        std::vector<Poison> poisons;
+        int numPoisons = 1;
+        for (int i = 0; i < numPoisons; i++) {
+            poisons.push_back(Poison());
+        }
         //foods[0].updateCoordinates(200, 200);
        
         // Food new_food = Food();
@@ -182,6 +187,12 @@ int main()
                 //foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
                 Mat food = foods[i].getImg();
                 overlayImage(&outputMat, &food, cv::Point(foods[i].getCoordintes().x,foods[i].getCoordintes().y));
+            }
+
+            for (int i = 0; i < poisons.size(); i++) {
+                //foods[i].getImg().copyTo(outputMat(foods[i].getCoordintes()),mask);
+                Mat poison = poisons[i].getImg();
+                overlayImage(&outputMat, &poison, cv::Point(poisons[i].getCoordintes().x,poisons[i].getCoordintes().y));
             }
             //make for loop eventually
             //new_food.getImg().copyTo(outputMat(new_food.getCoordintes()),mask);
