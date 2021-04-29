@@ -24,7 +24,7 @@ using namespace dlib;
 using namespace std;
 using namespace cv;
 
-bool rectangle_in_bounds(cv::Rect test_rect, cv::Rect bound_box, int buffer = 0){
+bool rectangleInBounds(cv::Rect test_rect, cv::Rect bound_box, int buffer = 0){
     bool in_bounds = false;
     if (test_rect.x > bound_box.x - buffer && 
         test_rect.x+test_rect.width < bound_box.x+bound_box.width + buffer &&
@@ -157,10 +157,9 @@ int main()
             createAlphaImage(temp,outputMat);
             //cout<<outputMat.channels()<<endl;
 
-            cout << foods[0].getVelocity().y << endl;
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
-                if (rectangle_in_bounds(foodCoords,bound_box,20)) { //Eat food
+                if (rectangleInBounds(foodCoords,bound_box,30)) { //Eat food
                     //cout << "ATE COOKIE!!! " << i << "size before: " << foods.size() <<endl;
                     score += 1;
                     cout << "Score: " << score << endl;
@@ -210,7 +209,7 @@ int main()
                                     shapes[i].part(63).y(), 
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
                                     abs(shapes[i].part(63).y()-shapes[i].part(67).y()));
-                //cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
+                cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
                 
                 
                 // split(new_food.getImg(),rgbLayer);
