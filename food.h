@@ -36,9 +36,14 @@ class Food {
 
         cv::Point getAcceleration();
 
-    private:
+    // private:
         cv::Mat img;
         cv::Rect coordinates;
         cv::Point velocity; 
         cv::Point acceleration;
+};
+
+class Poison : public Food {
+    public:
+        Poison();
 };
