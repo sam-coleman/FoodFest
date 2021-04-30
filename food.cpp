@@ -5,19 +5,26 @@ using namespace std;
 
 std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/oreo.png"};
 std::vector<std::string> imgAddressesPoisons {"../foods/lettuce.png"};
+std::vector<std::string> imgAddressesLives {"../foods/life.png"};
 
 const int gravity = 1;
 const int terminalVelocity = 12; 
 
-Food::Food(bool poisonInput){
-    poison = poisonInput;
+Food::Food(FoodType foodTypeInput){
+    foodType = foodTypeInput;
     string imgAddress;
-    if (poison){
-        imgAddress = imgAddressesPoisons[rand() % imgAddressesPoisons.size()];
+
+    switch(foodType) {
+        case FoodType::poison:
+            imgAddress = imgAddressesPoisons[rand() % imgAddressesPoisons.size()];
+            break;
+        case FoodType::life:
+            imgAddress = imgAddressesLives[rand() % imgAddressesLives.size()];
+            break;
+        default:
+            imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
     }
-    else {
-        imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
-    }
+
     img = imread(imgAddress, -1);
     coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
     velocity = Point(0,rand()%(7));

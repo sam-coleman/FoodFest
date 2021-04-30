@@ -18,10 +18,10 @@
 #include <iostream>    
 #include <cstdlib>
 
-
+enum FoodType {food, poison, life};
 class Food {       
     public:
-        Food(bool poisonInput = false);
+        Food(FoodType foodTypeInput = FoodType::food);
 
         cv::Mat getImg();    
 
@@ -44,4 +44,5 @@ class Food {
         cv::Point velocity; 
         cv::Point acceleration;
         bool poison;
+        FoodType foodType;
 };
