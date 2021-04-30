@@ -36,13 +36,12 @@ class Food {
 
         cv::Point getAcceleration();
 
-        bool IsPoison();
+        FoodType GetFoodType();
 
     private:
         cv::Mat img;
         cv::Rect coordinates;
         cv::Point velocity; 
         cv::Point acceleration;
-        bool poison;
         FoodType foodType;
 };

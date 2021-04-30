@@ -107,7 +107,7 @@ int main()
             foods.push_back(Food());
         }
         int randNumPoision;
-
+        int randNumLife;
         //overlay setup
         Mat mask;
         std::vector<Mat> rgbLayer;
@@ -147,19 +147,27 @@ int main()
                 foods.push_back(Food());
             }
 
-            randNumPoision = std::rand()%(60); //make new poison?
+            randNumPoision = std::rand()%(100); //make new poison?
             if (randNumPoision == 1) {
-                foods.push_back(Food(true));
+                foods.push_back(Food(FoodType::poison));
+            }
+
+            randNumLife = std::rand()%((int)(350 * 1/(strikes+1)));
+            if (randNumLife == 1) {
+                foods.push_back(Food(FoodType::life));
             }
 
             //detect and move foods
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
-                if (rectangleInBounds(foodCoords,bound_box,30)) { //Eat food
+                if (rectangleInBounds(foodCoords,bound_box,18)) { //Eat food
                     //Increase strikes if poison
-                    if (foods[i].IsPoison()){
+                    if (foods[i].GetFoodType() == poison){
                         score -= 1;
                         strikes += 1;
+                    }
+                    else if (foods[i].GetFoodType() == life && strikes > 0) {
+                        strikes -= 1;
                     }
                     //otherwise increase score
                     else {
@@ -170,7 +178,7 @@ int main()
                 } 
                 else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
                     // Increase strikes if not poison
-                    if (!foods[i].IsPoison()){
+                    if (foods[i].GetFoodType() == food){
                         strikes += 1;
                     }
                     foods.erase(foods.begin()+i);

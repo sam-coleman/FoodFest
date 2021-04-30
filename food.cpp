@@ -4,8 +4,8 @@ using namespace cv;
 using namespace std;
 
 std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/oreo.png"};
-std::vector<std::string> imgAddressesPoisons {"../foods/lettuce.png"};
-std::vector<std::string> imgAddressesLives {"../foods/life.png"};
+std::vector<std::string> imgAddressesPoisons {"../foods/poison.png"};
+std::vector<std::string> imgAddressesLives {"../foods/heart.png"};
 
 const int gravity = 1;
 const int terminalVelocity = 12; 
@@ -58,6 +58,6 @@ Point Food::getAcceleration(){
     return acceleration;
 }
 
-bool Food::IsPoison(){
-    return poison;
+FoodType Food::GetFoodType(){
+    return foodType;
 }
