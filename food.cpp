@@ -4,7 +4,7 @@ using namespace cv;
 using namespace std;
 
 std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/oreo.png"};
-std::vector<std::string> imgAddressesPoisons {"../foods/lettuce.png"};
+std::vector<std::string> imgAddressesPoisons {"../foods/poison.png"};
 
 const int gravity = 1;
 const int terminalVelocity = 12; 
