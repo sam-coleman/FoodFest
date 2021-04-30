@@ -122,6 +122,10 @@ int main()
         int posDelta;
         int timestep = 1;
         int strikes = 0;
+
+        Mat strikeImg;
+        strikeImg = imread("../foods/strike.png", -1);
+        Point strikeLocation = Point(0, 0);
         while(strikes <=2)
         {
             // Grab a frame
@@ -138,7 +142,7 @@ int main()
 
             //creates four channel image
             createAlphaImage(temp,outputMat);
-            
+
             randNumFood = std::rand()%(foods.size()*15+2); // make new food?
             if (randNumFood == 1) {
                 foods.push_back(Food());
@@ -154,7 +158,6 @@ int main()
                 foodCoords = foods[i].getCoordintes();
                 if (rectangleInBounds(foodCoords,bound_box,30)) { //Eat food
                     score += 1;
-                    cout << "Score: " << score << endl;
                     foods.erase(foods.begin()+i);
                 } 
                 else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
@@ -175,7 +178,6 @@ int main()
                 if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat poison
                     score -= 1;
                     strikes += 1;
-                    cout << "Score: " << score << endl;
                     poisons.erase(poisons.begin()+i);
                 } 
                 else if (poisonCoords.y+1 >= outputMat.size().height-poisonCoords.height) {//delete poison if out of frame
@@ -198,6 +200,11 @@ int main()
             for (int i = 0; i < poisons.size(); i++) {
                 Mat poison = poisons[i].getImg();
                 overlayImage(&outputMat, &poison, cv::Point(poisons[i].getCoordintes().x,poisons[i].getCoordintes().y));
+            }
+
+            //overlay strikes
+            for (int i = 0; i < strikes; i++) {
+                overlayImage(&outputMat, &strikeImg, Point(strikeLocation.x + (i * 75), 0));
             }
 
             // Detect faces 
