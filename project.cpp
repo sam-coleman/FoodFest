@@ -143,7 +143,7 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
 
-            randNumFood = std::rand()%(foods.size()*15+2); // make new food?
+            randNumFood = std::rand()%(foods.size()*25+2); // make new food?
             if (randNumFood == 1) {
                 foods.push_back(Food());
             }

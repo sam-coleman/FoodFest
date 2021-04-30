@@ -7,7 +7,7 @@ std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/ore
 std::vector<std::string> imgAddressesPoisons {"../foods/lettuce.png"};
 
 const int gravity = 1;
-const int terminalVelocity = 15; 
+const int terminalVelocity = 12; 
 
 Food::Food(){
     string imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
@@ -18,7 +18,7 @@ Food::Food(){
     //coordinates = Rect(rand()%(620-20 + 1)+20,rand()%(460-50 + 1)+50,img.size().width,img.size().height);
     coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
 
-    velocity = Point(0,7);
+    velocity = Point(0,rand()%(7));
     acceleration = cv::Point(0,1);
     //cout << "x cord: " << coordinates.x << "y cord: " << coordinates.y << endl;
 
@@ -61,7 +61,7 @@ Poison::Poison() : Food() {
     //coordinates = Rect(rand()%(620-20 + 1)+20,rand()%(460-50 + 1)+50,img.size().width,img.size().height);
     coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
 
-    velocity = Point(0,7);
+    velocity = Point(0,rand()%(7));
     acceleration = cv::Point(0,1);
 }
 
