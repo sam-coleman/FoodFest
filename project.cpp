@@ -101,13 +101,12 @@ int main()
 
         //make a food
         std::vector<Food> foods;
-        int randNumFood;
-        int numFoods = 2;
-        for (int i = 0; i < numFoods; i++) {
+        int randNumEdible;
+        int numEdible = 2;
+        for (int i = 0; i < numEdible; i++) {
             foods.push_back(Food());
         }
         int randNumPoision;
-        std::vector<Poison> poisons;
 
         //overlay setup
         Mat mask;
@@ -117,7 +116,7 @@ int main()
         cv::Mat_<cv::Vec4b> outputMat;
 
         int score = 0;
-        Rect foodCoords, poisonCoords;
+        Rect foodCoords;
         int velocityDelta;
         int posDelta;
         int timestep = 1;
@@ -143,25 +142,37 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
 
-            randNumFood = std::rand()%(foods.size()*25+2); // make new food?
-            if (randNumFood == 1) {
+            randNumEdible = std::rand()%(foods.size()*25+2); // make new food?
+            if (randNumEdible == 1) {
                 foods.push_back(Food());
             }
 
             randNumPoision = std::rand()%(60); //make new poison?
             if (randNumPoision == 1) {
-                poisons.push_back(Poison());
+                foods.push_back(Food(true));
             }
 
             //detect and move foods
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
                 if (rectangleInBounds(foodCoords,bound_box,30)) { //Eat food
-                    score += 1;
+                    //Increase strikes if poison
+                    if (foods[i].IsPoison()){
+                        score -= 1;
+                        strikes += 1;
+                    }
+                    //otherwise increase score
+                    else {
+                        score += 1;
+                    }
                     foods.erase(foods.begin()+i);
+
                 } 
                 else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
-                    strikes += 1;
+                    // Increase strikes if not poison
+                    if (!foods[i].IsPoison()){
+                        strikes += 1;
+                    }
                     foods.erase(foods.begin()+i);
                 }
                 else { //move food down
@@ -172,35 +183,12 @@ int main()
                 }
             }
 
-            //detect and move poisons
-            for (int i = 0; i < poisons.size(); i++) {
-                poisonCoords = poisons[i].getCoordintes();
-                if (rectangleInBounds(poisonCoords,bound_box,30)) { //Eat poison
-                    score -= 1;
-                    strikes += 1;
-                    poisons.erase(poisons.begin()+i);
-                } 
-                else if (poisonCoords.y+1 >= outputMat.size().height-poisonCoords.height) {//delete poison if out of frame
-                    poisons.erase(poisons.begin()+i);
-                }
-                else { //move poison down
-                    velocityDelta = (int)poisons[i].getAcceleration().y * timestep;
-                    poisons[i].updateVelocity(0,velocityDelta);
-                    posDelta = poisons[i].getVelocity().y * timestep;
-                    poisons[i].updateCoordinates(poisonCoords.x, poisonCoords.y+posDelta);
-                }
-            }
-
             //overlay images
             for (int i = 0; i < foods.size(); i++) {
                 Mat food = foods[i].getImg();
                 overlayImage(&outputMat, &food, cv::Point(foods[i].getCoordintes().x,foods[i].getCoordintes().y));
             }
 
-            for (int i = 0; i < poisons.size(); i++) {
-                Mat poison = poisons[i].getImg();
-                overlayImage(&outputMat, &poison, cv::Point(poisons[i].getCoordintes().x,poisons[i].getCoordintes().y));
-            }
             //overlay strikes
             for (int i = 0; i < strikes; i++) {
                 overlayImage(&outputMat, &strikeImg, Point(strikeLocation.x + (i * 75), 0));

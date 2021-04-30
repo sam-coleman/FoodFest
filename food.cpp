@@ -9,20 +9,19 @@ std::vector<std::string> imgAddressesPoisons {"../foods/lettuce.png"};
 const int gravity = 1;
 const int terminalVelocity = 12; 
 
-Food::Food(){
-    string imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
-    //cout<<imgAddress<<endl;
+Food::Food(bool poisonInput){
+    poison = poisonInput;
+    string imgAddress;
+    if (poison){
+        imgAddress = imgAddressesPoisons[rand() % imgAddressesPoisons.size()];
+    }
+    else {
+        imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
+    }
     img = imread(imgAddress, -1);
-    // cv::resize(img, img, Size(40,40)); 
-    //srand(time(0));
-    //coordinates = Rect(rand()%(620-20 + 1)+20,rand()%(460-50 + 1)+50,img.size().width,img.size().height);
     coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
-
     velocity = Point(0,rand()%(7));
     acceleration = cv::Point(0,1);
-    //cout << "x cord: " << coordinates.x << "y cord: " << coordinates.y << endl;
-
-    //printf("image when made: %i, %i \n", img.size().width, img.size().height);
 }
 
 Mat Food::getImg(){
@@ -52,16 +51,6 @@ Point Food::getAcceleration(){
     return acceleration;
 }
 
-Poison::Poison() : Food() {
-    string imgAddress = imgAddressesPoisons[rand() % imgAddressesPoisons.size()];
-    //cout<<imgAddress<<endl;
-    img = imread(imgAddress, -1);
-    // cv::resize(img, img, Size(40,40)); 
-    //srand(time(0));
-    //coordinates = Rect(rand()%(620-20 + 1)+20,rand()%(460-50 + 1)+50,img.size().width,img.size().height);
-    coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
-
-    velocity = Point(0,rand()%(7));
-    acceleration = cv::Point(0,1);
+bool Food::IsPoison(){
+    return poison;
 }
-

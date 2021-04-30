@@ -21,7 +21,7 @@
 
 class Food {       
     public:
-        Food();
+        Food(bool poisonInput = false);
 
         cv::Mat getImg();    
 
@@ -36,14 +36,12 @@ class Food {
 
         cv::Point getAcceleration();
 
-    // private:
+        bool IsPoison();
+
+    private:
         cv::Mat img;
         cv::Rect coordinates;
         cv::Point velocity; 
         cv::Point acceleration;
-};
-
-class Poison : public Food {
-    public:
-        Poison();
+        bool poison;
 };
