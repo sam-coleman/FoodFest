@@ -201,11 +201,13 @@ int main()
                 Mat poison = poisons[i].getImg();
                 overlayImage(&outputMat, &poison, cv::Point(poisons[i].getCoordintes().x,poisons[i].getCoordintes().y));
             }
-
             //overlay strikes
             for (int i = 0; i < strikes; i++) {
                 overlayImage(&outputMat, &strikeImg, Point(strikeLocation.x + (i * 75), 0));
             }
+            //overlay score
+            String scoreBoard = "Score: " + std::to_string(score); 
+            putText(outputMat, scoreBoard, Point(outputMat.size().width - 200, 25), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
 
             // Detect faces 
             std::vector<dlib::rectangle> faces = detector(cimg);
@@ -233,7 +235,7 @@ int main()
         Mat loss;
         std::string textToShow = "Score: " + std::to_string(score); 
         loss = imread("../foods/loss.jpg");
-        putText(loss, textToShow, Point(loss.size().width/10, (loss.size().height/4)), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
+        putText(loss, textToShow, Point(loss.size().width - 200, 25), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
         imshow("Loser Screen", loss);
         waitKey(0);
         return 0;
