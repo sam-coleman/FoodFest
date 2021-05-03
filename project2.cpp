@@ -1,5 +1,5 @@
 /**
- * Food Fest Game
+ * Food Fest Game Alternative Version
  * 
  * @author Sam Coleman
  * @author Kate Mackowiak
@@ -110,17 +110,16 @@ int main()
         // set up bounding box
         cv::Rect bound_box;
 
-        //make a food
+        //make food
         std::vector<Food> foods;
         Rect coordinates;
-        int randNumEdible;
-        int numEdible = 2;
-        for (int i = 0; i < numEdible; i++) {
-            coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+        int randNumFoods;
+        int numFoods = 2;
+        for (int i = 0; i < numFoods; i++) {
+            coordinates = Rect(std::rand()%(620-foodWidth-40 + 1)+40,std::rand()%(450-foodHeight-90 + 1)+90,foodWidth,foodHeight);
             foods.push_back(Food(coordinates));
         }
-        int randNumPoision;
-        int randNumLife;
+
         //overlay setup
         Mat mask;
         std::vector<Mat> rgbLayer;
@@ -130,15 +129,8 @@ int main()
 
         int score = 0;
         Rect foodCoords;
-        int velocityDelta;
-        int posDelta;
-        int timestep = 1;
-        int strikes = 0;
 
-        Mat strikeImg;
-        strikeImg = imread("../foods/strike.png", -1);
-        Point strikeLocation = Point(0, 0);
-        while(strikes <=2)
+        while(1)
         {
             // Grab a frame
             cv::Mat temp;
@@ -155,56 +147,19 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
 
-            randNumEdible = std::rand()%(foods.size()*25+2); // make new food?
-            if (randNumEdible == 1) {
-                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+            randNumFoods = std::rand()%(foods.size()*15+2); // make new food?
+            if (randNumFoods == 1) {
+                coordinates = Rect(std::rand()%(620-foodWidth-40 + 1)+40,std::rand()%(450-foodHeight-90 + 1)+90,foodWidth,foodHeight);
                 foods.push_back(Food(coordinates));
-            }
-
-            randNumPoision = std::rand()%(100); //make new poison?
-            if (randNumPoision == 1) {
-                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
-                foods.push_back(Food(coordinates,FoodType::poison));
-            }
-
-            randNumLife = std::rand()%((int)(350 * 1/(strikes+1)));
-            if (randNumLife == 1) {
-                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
-                foods.push_back(Food(coordinates,FoodType::life));
             }
 
             //detect and move foods
             for (int i = 0; i < foods.size(); i++) {
                 foodCoords = foods[i].getCoordintes();
                 if (rectangleInBounds(foodCoords,bound_box,18)) { //Eat food
-                    //Increase strikes if poison
-                    if (foods[i].GetFoodType() == poison){
-                        score -= 1;
-                        strikes += 1;
-                    }
-                    else if (foods[i].GetFoodType() == life && strikes > 0) {
-                        strikes -= 1;
-                    }
-                    //otherwise increase score
-                    else {
-                        score += 1;
-                    }
+                    score += 1;
                     foods.erase(foods.begin()+i);
-
                 } 
-                else if (foodCoords.y+1 >= outputMat.size().height-foodCoords.height) {//delete food if out of frame
-                    // Increase strikes if not poison
-                    if (foods[i].GetFoodType() == food){
-                        strikes += 1;
-                    }
-                    foods.erase(foods.begin()+i);
-                }
-                else { //move food down
-                    velocityDelta = (int)foods[i].getAcceleration().y * timestep; //60 is arbitrary
-                    foods[i].updateVelocity(0,velocityDelta);
-                    posDelta = foods[i].getVelocity().y * timestep;
-                    foods[i].updateCoordinates(foodCoords.x, foodCoords.y+posDelta);
-                }
             }
 
             //overlay images
@@ -213,10 +168,6 @@ int main()
                 overlayImage(&outputMat, &food, cv::Point(foods[i].getCoordintes().x,foods[i].getCoordintes().y));
             }
 
-            //overlay strikes
-            for (int i = 0; i < strikes; i++) {
-                overlayImage(&outputMat, &strikeImg, Point(strikeLocation.x + (i * 75), 0));
-            }
             //overlay score
             String scoreBoard = "Score: " + std::to_string(score); 
             putText(outputMat, scoreBoard, Point(outputMat.size().width - 200, 25), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
