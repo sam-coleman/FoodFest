@@ -31,18 +31,32 @@ using namespace cv;
 const int foodWidth = 40;
 const int foodHeight = 40;
 
-bool rectangleInBounds(cv::Rect test_rect, cv::Rect bound_box, int buffer = 0){
-    bool in_bounds = false;
-    if (test_rect.x > bound_box.x - buffer && 
-        test_rect.x+test_rect.width < bound_box.x+bound_box.width + buffer &&
-        test_rect.y > bound_box.y - buffer &&
-        test_rect.y+test_rect.height < bound_box.y+bound_box.height + buffer){
-            in_bounds = true;
+/**
+* Check if given rectangle is in the bound box with a buffer
+*
+* @param testRect rectangle to test if it's encapsulated by the bound box
+* @param boundBox rectangle bound box that the testRect could be in
+* @param buffer integer buffer around the bound box that could encapsulate testRect
+* @return true if testRect is in boundBox
+*/
+bool rectangleInBounds(cv::Rect testRect, cv::Rect boundBox, int buffer = 0){
+    bool inBounds = false;
+    if (testRect.x > boundBox.x - buffer && 
+        testRect.x+testRect.width < boundBox.x+boundBox.width + buffer &&
+        testRect.y > boundBox.y - buffer &&
+        testRect.y+testRect.height < boundBox.y+boundBox.height + buffer){
+            inBounds = true;
     }
-    return in_bounds;
+    return inBounds;
 }
 
-//https://gist.github.com/acarabott/5030cfd7f9af5f6ccd10ded1d65cc64c
+/**
+* Adds an alpha channel to an image
+* source: https://gist.github.com/acarabott/5030cfd7f9af5f6ccd10ded1d65cc64c
+*
+* @param mat input 3 channel matrix
+* @param dst destination 4 channel matrix 
+*/
 void createAlphaImage(const cv::Mat& mat, cv::Mat_<cv::Vec4b>& dst)
 {
   std::vector<cv::Mat> matChannels;
@@ -55,7 +69,14 @@ void createAlphaImage(const cv::Mat& mat, cv::Mat_<cv::Vec4b>& dst)
   cv::merge(matChannels, dst);
 }
 
-//https://answers.opencv.org/question/73016/how-to-overlay-an-png-image-with-alpha-channel-to-another-png/
+/**
+* Overlays an image over another at coordinates
+* source: https://answers.opencv.org/question/73016/how-to-overlay-an-png-image-with-alpha-channel-to-another-png/
+*
+* @param src base matrix to overlay on, this matrix is edited
+* @param overlay overlay matrix 
+* @param location point where the top left of overlay should be on src
+*/
 void overlayImage(cv::Mat_<cv::Vec4b>* src, Mat* overlay, const Point& location)
 {
     for (int y = max(location.y, 0); y < src->rows; ++y)
@@ -127,9 +148,11 @@ int main()
         // four channel output
         cv::Mat_<cv::Vec4b> outputMat;
 
+        // set up score and coordinates
         int score = 0;
         Rect foodCoords;
 
+        // infinite gameplay
         while(1)
         {
             // Grab a frame
@@ -147,7 +170,8 @@ int main()
             //creates four channel image
             createAlphaImage(temp,outputMat);
 
-            randNumFoods = std::rand()%(foods.size()*15+2); // make new food?
+            // make new food
+            randNumFoods = std::rand()%(foods.size()*15+2); 
             if (randNumFoods == 1) {
                 coordinates = Rect(std::rand()%(620-foodWidth-40 + 1)+40,std::rand()%(450-foodHeight-90 + 1)+90,foodWidth,foodHeight);
                 foods.push_back(Food(coordinates));
@@ -184,9 +208,7 @@ int main()
                 bound_box = cv::Rect(shapes[i].part(49).x(),    
                                     shapes[i].part(63).y(), 
                                     abs(shapes[i].part(49).x()-shapes[i].part(55).x()), 
-                                    abs(shapes[i].part(63).y()-shapes[i].part(67).y()));
-                //cv::rectangle(outputMat,bound_box,cv::Scalar(255,0,0));
-                
+                                    abs(shapes[i].part(63).y()-shapes[i].part(67).y()));                
             }
             imshow("gameWindow",outputMat); //show game
 
@@ -195,12 +217,6 @@ int main()
         }
         //user has lost
         destroyWindow("gameWindow");
-        Mat loss;
-        std::string textToShow = "Score: " + std::to_string(score); 
-        loss = imread("../foods/loss.jpg");
-        putText(loss, textToShow, Point(loss.size().width - 200, 25), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
-        imshow("Loser Screen", loss);
-        waitKey(0);
         return 0;
     }
     catch(serialization_error& e)
