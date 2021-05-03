@@ -17,12 +17,19 @@
 #include <cmath> 
 #include <iostream>    
 #include <vector>
+#include <cmath> 
+#include <cstdlib>
+#include <stdlib.h>
+
 
 #include "food.h"
 
 using namespace dlib;
 using namespace std;
 using namespace cv;
+
+const int foodWidth = 40;
+const int foodHeight = 40;
 
 bool rectangleInBounds(cv::Rect test_rect, cv::Rect bound_box, int buffer = 0){
     bool in_bounds = false;
@@ -101,10 +108,12 @@ int main()
 
         //make a food
         std::vector<Food> foods;
+        Rect coordinates;
         int randNumEdible;
         int numEdible = 2;
         for (int i = 0; i < numEdible; i++) {
-            foods.push_back(Food());
+            coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+            foods.push_back(Food(coordinates));
         }
         int randNumPoision;
         int randNumLife;
@@ -144,17 +153,20 @@ int main()
 
             randNumEdible = std::rand()%(foods.size()*25+2); // make new food?
             if (randNumEdible == 1) {
-                foods.push_back(Food());
+                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+                foods.push_back(Food(coordinates));
             }
 
             randNumPoision = std::rand()%(100); //make new poison?
             if (randNumPoision == 1) {
-                foods.push_back(Food(FoodType::poison));
+                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+                foods.push_back(Food(coordinates,FoodType::poison));
             }
 
             randNumLife = std::rand()%((int)(350 * 1/(strikes+1)));
             if (randNumLife == 1) {
-                foods.push_back(Food(FoodType::life));
+                coordinates = Rect(std::rand()%(620-foodWidth-20 + 1)+20,1,foodWidth,foodHeight);
+                foods.push_back(Food(coordinates,FoodType::life));
             }
 
             //detect and move foods

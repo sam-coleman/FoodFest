@@ -10,7 +10,7 @@ std::vector<std::string> imgAddressesLives {"../foods/heart.png"};
 const int gravity = 1;
 const int terminalVelocity = 12; 
 
-Food::Food(FoodType foodTypeInput){
+Food::Food(Rect inputCoordinates, FoodType foodTypeInput, int width, int height){
     foodType = foodTypeInput;
     string imgAddress;
 
@@ -26,7 +26,9 @@ Food::Food(FoodType foodTypeInput){
     }
 
     img = imread(imgAddress, -1);
-    coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
+    cv::resize(img, img, Size(width,height)); 
+    // coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
+    coordinates = inputCoordinates;
     velocity = Point(0,rand()%(7));
     acceleration = cv::Point(0,1);
 }

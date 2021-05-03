@@ -21,7 +21,7 @@
 enum FoodType {food, poison, life};
 class Food {       
     public:
-        Food(FoodType foodTypeInput = FoodType::food);
+        Food(cv::Rect inputCoordinates, FoodType foodTypeInput = FoodType::food, int width=40, int height=40);
 
         cv::Mat getImg();    
 
