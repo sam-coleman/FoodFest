@@ -3,17 +3,22 @@
 using namespace cv;
 using namespace std;
 
+//define options for each type of object
 std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/oreo.png"};
 std::vector<std::string> imgAddressesPoisons {"../foods/poison.png"};
 std::vector<std::string> imgAddressesLives {"../foods/heart.png"};
 
+//define consyants
 const int gravity = 1;
 const int terminalVelocity = 12; 
 
-Food::Food(Rect inputCoordinates, FoodType foodTypeInput, int width, int height){
-    foodType = foodTypeInput;
-    string imgAddress;
 
+Food::Food(Rect inputCoordinates, FoodType foodTypeInput, int width, int height){
+    string imgAddress; //initialize image location
+
+    foodType = foodTypeInput; //Food, Poision, or Life
+
+    //get random image address corresponding with object to eat
     switch(foodType) {
         case FoodType::poison:
             imgAddress = imgAddressesPoisons[rand() % imgAddressesPoisons.size()];
@@ -25,9 +30,11 @@ Food::Food(Rect inputCoordinates, FoodType foodTypeInput, int width, int height)
             imgAddress = imgAddressesFoods[rand() % imgAddressesFoods.size()];
     }
 
+    //read and resize image
     img = imread(imgAddress, -1);
     cv::resize(img, img, Size(width,height)); 
-    // coordinates = Rect(rand()%(620-img.size().width-20 + 1)+20,1,img.size().width,img.size().height);
+
+    //initialize class variables
     coordinates = inputCoordinates;
     velocity = Point(0,rand()%(7));
     acceleration = cv::Point(0,1);
