@@ -20,7 +20,7 @@ We were succesfully able to implement two versions of our game - one in which th
 
 The facial feature and mouth bound box detection portion of our code is below.
 
-``` clike
+``` c
 // Detect faces 
 std::vector<dlib::rectangle> faces = detector(cimg);
 // Find the pose of each face.
@@ -41,7 +41,7 @@ We implemented a [class](https://github.com/sam-coleman/FoodFest/blob/main/food.
 
 Additionally, we implemented code to allow our items to fall with a simulated form of gravity. This is shown in the snipped below:
 
-```clike	
+```c
 //move food down
 velocityDelta = (int)foods[i].getAcceleration().y * timestep;
 foods[i].updateVelocity(0,velocityDelta);
@@ -55,7 +55,7 @@ This code updates the acceleration, velocity, and position of an item. The accel
 
 One design decision we made was how to make the items appear on screen with a degree of randomness, while avoiding a scenario where too any items appear at once and overwhelm the user. We decided to do this by making the chance that an item appears dependent on the number of items already on the screen. The calculations for each type of item are shown below.
 
-```clike
+```c
 //cookies number
 randNumEdible = std::rand()%(foods.size()*25+2); 
 //poison number
