@@ -4,9 +4,9 @@ using namespace cv;
 using namespace std;
 
 //define options for each type of object
-std::vector<std::string> imgAddressesFoods {"../foods/cookie.png", "../foods/oreo.png"};
-std::vector<std::string> imgAddressesPoisons {"../foods/poison.png"};
-std::vector<std::string> imgAddressesLives {"../foods/heart.png"};
+std::vector<std::string> imgAddressesFoods {"../graphics/cookie.png", "../graphics/oreo.png"};
+std::vector<std::string> imgAddressesPoisons {"../graphics/poison.png"};
+std::vector<std::string> imgAddressesLives {"../graphics/heart.png"};
 
 //define consyants
 const int gravity = 1;
