@@ -227,7 +227,7 @@ int main()
                     foods.erase(foods.begin()+i);
                 }
                 else { //move food down
-                    velocityDelta = (int)foods[i].getAcceleration().y * timestep; //60 is arbitrary
+                    velocityDelta = (int)foods[i].getAcceleration().y * timestep;
                     foods[i].updateVelocity(0,velocityDelta);
                     posDelta = foods[i].getVelocity().y * timestep;
                     foods[i].updateCoordinates(foodCoords.x, foodCoords.y+posDelta);
