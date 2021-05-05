@@ -15,6 +15,7 @@ This game has food, poison, and hearts which fall from the top of the screen. Th
 ## Installation
 
 To install Dlib and add it to the build, we followed this set of instructions: https://learnopencv.com/install-dlib-on-ubuntu/ which are detailed as following:
+
 Install OS libraries
 ```bash
 sudo apt-get install build-essential cmake pkg-config
@@ -26,6 +27,8 @@ Install Python libraries
 sudo apt-get install python-dev python-pip python3-dev python3-pip
 sudo -H pip3 install -U pip numpy
 ```
+In the FoodFest directory:
+
 Setup directories
 ```bash
 mkdir build
