@@ -158,7 +158,7 @@ int main()
         int score = 0;
         int strikes = 0;
         Mat strikeImg;
-        strikeImg = imread("../foods/strike.png", -1);
+        strikeImg = imread("../graphics/strike.png", -1);
         Point strikeLocation = Point(0, 0);
 
         // main gameplay loop
@@ -271,7 +271,7 @@ int main()
         destroyWindow("gameWindow");
         Mat loss;
         std::string textToShow = "Score: " + std::to_string(score); 
-        loss = imread("../foods/loss.jpg");
+        loss = imread("../graphics/loss.jpg");
         putText(loss, textToShow, Point(loss.size().width - 200, 25), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, LINE_AA);
         imshow("Loser Screen", loss);
         waitKey(0);
