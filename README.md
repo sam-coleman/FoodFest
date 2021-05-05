@@ -10,7 +10,7 @@ This game has food, poison, and hearts which fall from the top of the screen. Th
 
 ## Requirements:
 - Opencv >= 3.0 
-- Dlib >= 19.6 
+- Dlib >= 19.6 (See below for installation process)
 
 ## Installation
 
