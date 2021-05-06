@@ -8,6 +8,8 @@ Food appears on the screen and remains in one location. The game never ends.
 #### FallingFood:
 This game has food, poison, and hearts which fall from the top of the screen. The player must catch food, and avoid poison, otherwise they lose a life. The game ends when the player loses three lives, however until that point they can regain lives by eating hearts. There is no way to win this game.
 
+Gameplay can be viewed here: https://drive.google.com/file/d/1BkxpbRBSgjn3f7uwsRHMv2sBhHyDlQ-F/view?usp=sharing
+
 ## Requirements:
 - Opencv >= 3.0 
 - Dlib >= 19.6 (See below for installation process)
