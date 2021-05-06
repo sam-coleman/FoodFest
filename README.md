@@ -1,4 +1,4 @@
-# SoftSysFoodFest
+# Food Fest Game
 OpenCV food catching game utilizing dlib for face identification
 
 Identifies any faces within a webcam frame and uses that information to let players "eat" food images on screen.
